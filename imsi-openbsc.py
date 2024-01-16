@@ -128,7 +128,7 @@ class tracker:
 
         try:
             #print(new_imsi)
-            s = socket.create_connection(('192.168.100.210', 4242))
+            s = socket.create_connection(('127.0.0.1', 4242))
             s.send(bytes(("subscriber create imsi %s\n" % new_imsi).encode('utf-8')))
             s.close()
             return new_imsi, country, brand, operator
