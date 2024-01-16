@@ -133,27 +133,31 @@ class tracker:
             brand = f"Unknown MNC {mnc}"
             operator = f"Unknown MNC {mnc}"
             new_imsi = f"{mcc}{mnc}{new_imsi[6:]}"
+
         def ssh_connect(hostname, username, password, port=22):
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())    
+            #try:
+            #    ssh.connect(hostname, port, username, password)
+            #    print(f"Connected to {ssh_hostname} via SSH")
+            #    return ssh
+            #except Exception as e:
+            #    print(f"Error connecting to {ssh_hostname} via SSH: {str(e)}")
+            #    return None
             try:
-                ssh.connect(ssh_hostname, ssh_port, ssh_username, ssh_password)
-                print(f"Connected to {ssh_hostname} via SSH")
-                return ssh
-            except Exception as e:
-                print(f"Error connecting to {ssh_hostname} via SSH: {str(e)}")
-                return None
-            try:
-                ssh_connection = ssh_connect((ssh_host, ssh_username, ssh_password, ssh_port)) 
-                if ssh_connection:
-                #print(new_imsi)
-                    s = ssh_connection(socket.create_connection('127.0.0.1', 4242))
-                    s.send(bytes(("subscriber create imsi %s\n" % new_imsi).encode('utf-8')))
-                    s.close()
+                ssh.connect("192.168.100.210",22,"local","franico31")
+                ssh.exec_command("echo 'subscriber create imsi %s' | nc localhost 4242" % new_imsi)
+                #if ssh_connection:   
+                    #print(new_imsi)
+                    #s = ssh_connection(socket.create_connection('127.0.0.1', 4242))
+                    #s.send(bytes(("subscriber create imsi %s\n" % new_imsi).encode('utf-8')))
+                    #print(s)
+                    #s.close()
                 return new_imsi, country, brand, operator
             except Exception:
-            # m = ""
                 print("Error", packet, new_imsi, country, brand, operator)
+
+        ssh_connect("192.168.100.210","local","franico31",22)
         return new_imsi, country, brand, operator
 
     def load_mcc_codes(self):
