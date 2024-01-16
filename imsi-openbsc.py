@@ -32,6 +32,8 @@ import sys
 import random
 import logging
 import time
+import paramiko
+
 
 imsitracker = None
 
@@ -111,6 +113,13 @@ class tracker:
         brand = ""
         operator = ""
 
+        ssh_hostname = '192.168.100.210'
+        ssh_port = 22
+        ssh_username = 'local'
+        ssh_password = 'franico31'
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
         if mcc in self.mcc_codes:
             if mnc in self.mcc_codes[mcc]:
                 brand, operator, country, _ = self.mcc_codes[mcc][mnc]
@@ -125,12 +134,20 @@ class tracker:
             brand = f"Unknown MNC {mnc}"
             operator = f"Unknown MNC {mnc}"
             new_imsi = f"{mcc}{mnc}{new_imsi[6:]}"
-
         try:
-            #print(new_imsi)
-            s = socket.create_connection(('127.0.0.1', 4242))
-            s.send(bytes(("subscriber create imsi %s\n" % new_imsi).encode('utf-8')))
-            s.close()
+            ssh.connect(ssh_hostname, ssh_port, ssh_username, ssh_password)
+            print(f"Connected to {ssh_hostname} via SSH")
+            return ssh
+        except Exception as e:
+            print(f"Error connecting to {ssh_hostname} via SSH: {str(e)}")
+            return None
+        try:
+            ssh_connection = ssh_connect(ssh_host, ssh_username, ssh_password, ssh_port) 
+            if ssh_connection:
+                #print(new_imsi)
+                s = ssh_connection(socket.create_connection(('127.0.0.1', 4242)))
+                s.send(bytes(("subscriber create imsi %s\n" % new_imsi).encode('utf-8')))
+                s.close()
             return new_imsi, country, brand, operator
         except Exception:
             # m = ""
