@@ -116,7 +116,7 @@ class tracker:
         ssh_hostname = '192.168.100.210'
         ssh_port = 22
         ssh_username = 'local'
-        ssh_password = 'franico31'
+        ssh_password = '123123'
 
 
         if mcc in self.mcc_codes:
@@ -145,7 +145,7 @@ class tracker:
             #    print(f"Error connecting to {ssh_hostname} via SSH: {str(e)}")
             #    return None
             try:
-                ssh.connect("192.168.100.210",22,"local","franico31")
+                ssh.connect("192.168.100.210",22,"local","123123")
                 ssh.exec_command("echo 'subscriber create imsi %s' | nc localhost 4242" % new_imsi)
                 #if ssh_connection:   
                     #print(new_imsi)
