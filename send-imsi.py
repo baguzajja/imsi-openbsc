@@ -30,7 +30,7 @@ def send_to_ssh(new_imsi):
     # Menghubungkan ke server SSH
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect("192.168.1.112", 22, "local", "franico31")
+    ssh.connect("192.168.1.112", 22, "local", "123123")
 
     try:
         # Mengirim perintah ke server SSH
