@@ -2,6 +2,8 @@ import paramiko
 import subprocess
 import re
 
+sent_imsi_set = set()
+
 def tail_and_grep(log_file, pattern):
     # Membuka proses tail -f dan grep pada file log
     command = ['tail', '-f', log_file]
@@ -16,9 +18,13 @@ def tail_and_grep(log_file, pattern):
                 # Mengambil nilai IMSI dari hasil pencarian
                 imsi_value = match.group(1)
 
-                # Mengirim nilai IMSI ke server SSH
-                send_to_ssh(imsi_value)
-                print(imsi_value)
+                    if imsi_value not in sent_imsi_set:
+                    # Mengirim nilai IMSI ke server SSH
+                    send_to_ssh(imsi_value)
+                    sent_imsi_set.add(imsi_value)  # Menambah IMSI ke set
+
+                    # Menampilkan nilai IMSI
+                    print(imsi_value)
 
     except KeyboardInterrupt:
         # Menangani penekanan Ctrl+C
